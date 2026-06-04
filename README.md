@@ -36,7 +36,7 @@ The best way is to build the Demo App. This app demonstrates the following:
 * Adding menu items to existing menu.
 * Creating keyboard shortcuts
 
- - https://github.com/j-crosson/cordova-menu-demo
+ - https://github.com/j-crosson/cordova-plugin-padmenu-demo
 
 
 ## Example
