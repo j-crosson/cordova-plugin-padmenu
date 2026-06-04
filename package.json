@@ -1,6 +1,6 @@
 {
   "name": "cordova-plugin-padmenu",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "iPad Menus",
   "cordova": {
     "id": "cordova-plugin-padmenu",
@@ -26,11 +26,17 @@
       }
     }
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/j-crosson/cordova-plugin-padmenu.git"
   },
   "author": "Cedtris",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bugs": {
+    "url": "https://github.com/j-crosson/cordova-plugin-padmenu/issues"
+  }
 }
