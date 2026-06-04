@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-padmenu" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>PadMenu</name>
+    <engines>
+        <engine name="cordova-ios" version=">=8.0.0" />
+    </engines>
+    <description>iPad Menu</description>
+    <author>Cedtris</author>
+    <license>MIT</license>
+    <js-module name="PadMenu" src="www/PadMenu.js">
+        <clobbers target="PadMenu" />
+    </js-module>
+    <platform name="ios">
+        <config-file target="config.xml" parent ="/*">
+            <feature name ="PadMenu">
+                <param name ="ios-package" value="PadMenu" />
+            </feature>
+        </config-file>
+        <source-file src ="src/ios/MenuProperties.swift" />
+        <source-file src ="src/ios/Image.swift" />
+        <source-file src ="src/ios/PadMenu.swift" />
+    </platform>
+</plugin>

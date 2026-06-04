@@ -1,0 +1,36 @@
+{
+  "name": "cordova-plugin-padmenu",
+  "version": "1.0.0",
+  "description": "iPad Menus",
+  "cordova": {
+    "id": "cordova-plugin-padmenu",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "homepage": "https://github.com/j-crosson/cordova-plugin-padmenu#readme",
+  "keywords": [
+    "cordova",
+    "ecosystem:cordova",
+    "menu",
+    "iPad",
+    "cordova-ios",
+    "cordova:plugin",
+    "iOS26"
+  ],
+  "engines": {
+    "cordovaDependencies": {
+      "1.0.0": {
+        "cordova": ">9.0.0",
+        "cordova-ios": ">=8.0.0"
+      }
+    }
+  },
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/j-crosson/cordova-plugin-padmenu.git"
+  },
+  "author": "Cedtris",
+  "license": "MIT"
+}
