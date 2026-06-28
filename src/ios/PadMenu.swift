@@ -2,11 +2,16 @@
 // Padmenu.swift
 //
 //  Created by jerry on 12/13/24.
+//  This file has a pre-package manager workaround which will go away in the next version
 //
 
 import Foundation
 import UIKit
 import WebKit
+
+private var disabledMenu: [String] = []
+private var printDisabled: Bool = false
+
 
 extension CDVViewController {
     open override func printContent(_: Any?) {
@@ -16,6 +21,34 @@ extension CDVViewController {
     @objc func menuKey(_ sender: UIKeyCommand) {
         let select = sender.propertyList as?  String ?? ""
         commandDelegate.evalJs("PadMenu.itemSelected('\(select)');")
+    }
+
+    
+    open override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+
+         if #available(iOS 15.0, *) {
+             //only one for now but there may be more to come
+            switch action {
+                case #selector(UIResponderStandardEditActions.printContent(_:)) where printDisabled == true:
+                    return false
+                default:
+                    return super.canPerformAction(action, withSender: sender)
+                }
+         } else {
+            return super.canPerformAction(action, withSender: sender)
+    }
+}
+
+    open override func validate(_ command: UICommand) {
+        if disabledMenu.count == 0 {
+            return
+        }
+    
+        if let commandPlistString = command.propertyList as? String {
+            if disabledMenu.firstIndex(of: commandPlistString)   != nil {
+                command.attributes = .disabled
+            }
+        }
     }
 }
 
@@ -98,8 +131,7 @@ private var menuProperties = MenuProps()
     @objc(menuAction:)
     func documentAction(command: CDVInvokedUrlCommand) {
         guard command.arguments.count > 0,
-              let gAction  = command.arguments[0] as? String,
-              let jstring  = command.arguments[1] as? String  else {
+              let gAction  = command.arguments[0] as? String  else {
             commandError(command, ReturnStatus.badCommand)
             return
         }
@@ -107,6 +139,11 @@ private var menuProperties = MenuProps()
             case "modify":
 
             if #available(iOS 26.0, *) {
+                
+            guard let jstring  = command.arguments[1] as? String else {
+                commandError(command, ReturnStatus.badCommand)
+                return
+            }
 
             let config = UIMainMenuSystem.Configuration()
 
@@ -161,7 +198,7 @@ private var menuProperties = MenuProps()
                                         }
 
                                         let shortMenu = UIKeyCommand(title: item.title ?? "",
-                                                                     image: newImage(image: item.menuImage),
+                                                                     image: newImages(image: item.menuImage),
                                                                      action: #selector(self.viewController.menuKey),
                                                                      input: shortcut,
                                                                      modifierFlags: modifiers,
@@ -172,14 +209,12 @@ private var menuProperties = MenuProps()
                                         //
                                         // add item without keyboard shortcut
                                         //
-                                        menuChildren.append(UIAction(title: item.title ?? "",
-                                                                      image: newImage(image: item.menuImage),
-                                                                      identifier: UIAction.Identifier(
-                                                                      item.identifier ?? ""),
-                                                                      attributes: atts,
-                                                                      handler: {  [unowned self] (_) in
-                                        commandDelegate.evalJs("PadMenu.itemSelected('\(item.identifier  ?? "" )');")
-                                        }))
+                                        let shortMenu = UICommand(title: item.title ?? "",
+                                                                     image: newImages(image: item.menuImage),
+                                                                     action: #selector(self.viewController.menuKey),
+                                                                     propertyList: item.identifier ?? "",
+                                                                     attributes: atts)
+                                        menuChildren.append(shortMenu)
                                     }
                                 }
                                 if let theType = menu.type {
@@ -222,8 +257,29 @@ private var menuProperties = MenuProps()
                 commandError(command, ReturnStatus.pre26)
             }
 
+        case "disable":
+            if #available(iOS 26.0, *) {
+                guard let disableItems  = command.arguments[1] as? [String] else {
+                    commandError(command, ReturnStatus.badCommand)
+                    return
+                }
+                disabledMenu = disableItems
+                
+                // "print' is for now the only special case, a standard menu item
+                if disabledMenu.firstIndex(of: "print")   != nil {
+                    disabledMenu.removeAll(where: { $0 == "print" })
+                    printDisabled = true
+                } else {
+                    printDisabled = false
+                }
+
+            } else {
+                commandError(command, ReturnStatus.pre26)
+            }
+
             default:
                 return
             }
         }
     }
+

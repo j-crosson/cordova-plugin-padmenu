@@ -16,6 +16,10 @@ Minimum supported Deployment Target is iOS13.  Has no effect unless running iOS2
 
 The main menu should be set up as early as possible.  We can't do menu setup at the point Apple suggests: that would require native code.  What we can do is menu set up first thing in  "onDeviceReady".
 
+## New in 1.1.0
+
+* Ability to dynamically disable/enable menu items
+
 ## What’s Ahead
 
 * SubMenus
@@ -76,7 +80,7 @@ Perform Menu Action such as creating menu items.
 | action | String |  action  to perform | |
 | success | Function | Success callback function| null |
 | error | Function | Error callback | null|
-| arguments | [String] |  action  data | [""]|
+| arguments | [] |  An array of arguments to be passed | []|
 
 
 
@@ -98,12 +102,20 @@ Creates menu items either as an addition to an existing menu or a user-created m
   
 ```
 
+### arguments
 
-## modify JSON
+    [modifyJSON]
+
+**modifyJSON**
 
 Menu data is represented by the following JSON:
 
+    Type: iPadMenus
 
+**iPadMenus**
+
+
+JSON Menu data 
 
 **PadMenus**
 
@@ -204,7 +216,7 @@ menuJSON = '{"title":"Item 3"}';
 
 
 
-A Standard Menu identifier refers to a built-in menu, an Apple-defined menu that already exists, while an user-defined identifier is a unique identifier string for a user-defined menu. 
+A Standard Menu Identifier refers to a built-in menu, an Apple-defined menu that already exists, while an user-defined identifier is a unique identifier string for a user-defined menu. Don't use a Standard Menu Identifier for a user-defined item.
 
 | Standard Menu Identifier | 
 | --- | 
@@ -618,5 +630,41 @@ let menuJSON =
 }';
 
     PadMenu.menuAction ('modify',null, () => {alert("Pre iOS26, no effect");},[menuJSON]);
+
+```
+***
+**disable** 
+***
+
+Disable Menu Items
+
+Disables menu items.  To enable items, pass a new list of disabled items; to enable all items, pass an empty list.  
+
+
+```javascript
+
+    PadMenu.menuAction ('disable', itemsDisabled, disableFailed,[identifiers])}; 
+  
+```
+
+### arguments
+
+    [identifiers]
+
+**identifiers**
+
+Type: [String]
+
+Array of identifiers to be disabled
+
+* "print" refers to the "Print" Standard Menu Item.  This is the only Standard Menu Item this plugin can disable.
+
+## Example
+
+Disable "print" menu and user-defined "item 1"
+
+```javascript
+    const disabledItems =  ["item 1", "print"];
+    PadMenu.menuAction ('disable',null, () => {alert("Pre iOS26, no effect");},[disabledItems]);
 
 ```

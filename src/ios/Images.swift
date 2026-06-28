@@ -8,9 +8,10 @@ import Foundation
 
 //
 // For now we only support system symbols and file.  This may change in the future.
+// This file has a pre-package manager workaround which will go away in the next version
 //
 
-func newImage(image: MenuProperties.Image?) -> UIImage? {
+func newImages(image: MenuProperties.Image?) -> UIImage? {
     let symbolScale: [String: UIImage.SymbolScale] = ["default": .default,
                                                       "unspecified": .unspecified,
                                                       "small": .small,
